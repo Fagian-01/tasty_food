@@ -4,39 +4,30 @@
 
 @section('content')
 
-<section class="news-detail">
-
-    <div class="news-detail-header">
-
-        <p class="section-label">GALERI</p>
-
-        <h1>{{ $gallery->title }}</h1>
-
+<section class="page-hero" style="min-height:300px;">
+    <div>
+        <h1 style="font-size:clamp(28px,3.5vw,44px);">{{ strtoupper(Str::limit($gallery->title, 50)) }}</h1>
+        <p>{{ $gallery->created_at->format('d M Y') }}</p>
     </div>
+</section>
 
-    <div class="news-detail-image">
+<section class="detail-wrap">
+    <p class="section-label">GALERI</p>
+    <h1>{{ $gallery->title }}</h1>
+    <p class="detail-meta">{{ $gallery->created_at->format('d M Y') }}</p>
 
-        <img
-            src="{{ asset('storage/' . $gallery->image) }}"
-            alt="{{ $gallery->title }}"
-        >
-
-    </div>
+    <img class="detail-img" src="{{ asset('storage/' . $gallery->image) }}" alt="{{ $gallery->title }}">
 
     @if($gallery->description)
-
-        <div class="news-detail-content">
-
+        <div class="detail-body">
             <p>{{ $gallery->description }}</p>
-
         </div>
-
     @endif
 
-    <a href="{{ url('/galeri') }}" class="btn-primary">
-        ← KEMBALI KE GALERI
-    </a>
-
+    <div class="back-row">
+        <a href="{{ url('/galeri') }}" class="btn-primary">&larr; KEMBALI KE GALERI</a>
+        <a href="{{ url('/galeri/' . $gallery->id . '/edit') }}" class="btn-primary" style="background:#fff;color:#111;border:1px solid #ddd;">EDIT</a>
+    </div>
 </section>
 
 @endsection

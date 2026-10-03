@@ -1,92 +1,93 @@
 @extends('layouts.app')
 
-@section('title', 'Galeri - Tasty Food')
+@section('title', 'Galeri Kami - Tasty Food')
 
 @section('content')
 
-<section class="gallery-section">
-
-    <div class="section-heading">
-        <p class="section-label">GALERI</p>
+{{-- HERO --}}
+<section class="page-hero">
+    <div>
         <h1>GALERI KAMI</h1>
+        <p>Dokumentasi hidangan dan momen Tasty Food</p>
     </div>
+</section>
 
+{{-- SLIDER --}}
+<section style="background:#f5f5f5;padding:70px 8%;">
     @if(session('success'))
-        <div class="success-message">
-            {{ session('success') }}
-        </div>
+        <div class="success-message">{{ session('success') }}</div>
     @endif
 
-    <div class="gallery-admin-button">
-        <a href="{{ url('/galeri/create') }}" class="btn-primary">
-            + TAMBAH GALERI
-        </a>
+    <div class="admin-bar">
+        <a href="{{ url('/galeri/create') }}" class="btn-primary">+ TAMBAH GALERI</a>
     </div>
 
     @if($galleries->count())
+        <div class="gallery-slider" id="gallerySlider">
+            @foreach($galleries->take(5) as $i => $g)
+                <div class="slide {{ $i === 0 ? 'active' : '' }}">
+                    <a href="{{ url('/galeri/' . $g->id) }}">
+                        <img src="{{ asset('storage/' . $g->image) }}" alt="{{ $g->title }}">
+                    </a>
+                    <p class="slider-cap">{{ $g->title }}</p>
+                </div>
+            @endforeach
+            @if($galleries->count() > 1)
+                <button class="slider-btn prev" type="button" onclick="moveSlide(-1)">&#8249;</button>
+                <button class="slider-btn next" type="button" onclick="moveSlide(1)">&#8250;</button>
+            @endif
+        </div>
+    @endif
+</section>
 
+{{-- GRID --}}
+<section class="gallery-section" style="padding-top:70px;">
+    @if($galleries->count())
         <div class="gallery-grid">
-
             @foreach($galleries as $gallery)
-
-                <article class="gallery-card">
-
-                    <img
-                        src="{{ asset('storage/' . $gallery->image) }}"
-                        alt="{{ $gallery->title }}"
-                    >
-
-                    <div class="gallery-card-content">
-
-                        <h3>{{ $gallery->title }}</h3>
-
+                <article class="g-card">
+                    <a href="{{ url('/galeri/' . $gallery->id) }}">
+                        <img src="{{ asset('storage/' . $gallery->image) }}" alt="{{ $gallery->title }}" loading="lazy">
+                    </a>
+                    <div class="g-body">
+                        <h3>{{ strtoupper(Str::limit($gallery->title, 40)) }}</h3>
                         @if($gallery->description)
-                            <p>
-                                {{ $gallery->description }}
-                            </p>
+                            <p>{{ Str::limit($gallery->description, 80) }}</p>
                         @endif
-
-                        <a href="{{ url('/galeri/' . $gallery->id) }}">
-                            LIHAT DETAIL →
-                        </a>
-
-                        <div class="gallery-actions">
-
-                            <a href="{{ url('/galeri/' . $gallery->id . '/edit') }}">
-                                EDIT
-                            </a>
-
-                            <form
-                                action="{{ url('/galeri/' . $gallery->id) }}"
-                                method="POST"
-                                onsubmit="return confirm('Yakin ingin menghapus galeri ini?')"
-                            >
+                        <div class="card-foot">
+                            <a class="read-more" href="{{ url('/galeri/' . $gallery->id) }}">Lihat detail</a>
+                            <span class="dots">...</span>
+                        </div>
+                        <div class="crud-actions">
+                            <a href="{{ url('/galeri/' . $gallery->id . '/edit') }}">EDIT</a>
+                            <form action="{{ url('/galeri/' . $gallery->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus galeri ini?')">
                                 @csrf
                                 @method('DELETE')
-
-                                <button type="submit">
-                                    HAPUS
-                                </button>
+                                <button type="submit" class="danger">HAPUS</button>
                             </form>
-
                         </div>
-
                     </div>
-
                 </article>
-
             @endforeach
-
         </div>
-
     @else
-
-        <p class="empty-news">
-            Belum ada galeri.
-        </p>
-
+        <p class="empty-state">Belum ada galeri.</p>
     @endif
-
 </section>
 
 @endsection
+
+@push('scripts')
+<script>
+    (function () {
+        var idx = 0;
+        window.moveSlide = function (n) {
+            var slides = document.querySelectorAll('#gallerySlider .slide');
+            if (!slides.length) return;
+            slides[idx].classList.remove('active');
+            idx = (idx + n + slides.length) % slides.length;
+            slides[idx].classList.add('active');
+        };
+    })();
+</script>
+@endpush

@@ -1,76 +1,45 @@
 @extends('layouts.app')
 
-@section('title', 'Tambah Kontak - Tasty Food')
+@section('title', 'Kirim Pesan - Tasty Food')
 
 @section('content')
 
-<section class="form-section">
-
-    <div class="section-heading">
-        <p class="section-label">KONTAK</p>
-        <h1>KIRIM PESAN</h1>
+<section class="page-hero">
+    <div>
+        <h1>KONTAK KAMI</h1>
+        <p>Kirim pesan kepada kami</p>
     </div>
+</section>
 
-    <form
-        action="{{ url('/kontak') }}"
-        method="POST"
-    >
-        @csrf
+<section class="contact-form-sec">
+    <div style="max-width:1100px;margin:0 auto;">
+        <h2>KIRIM PESAN</h2>
 
-        <div class="form-group">
-            <label for="name">Nama</label>
+        @if($errors->any())
+            <div class="error-box">
+                <ul>
+                    @foreach($errors->all() as $e)
+                        <li>{{ $e }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
-            <input
-                type="text"
-                id="name"
-                name="name"
-                placeholder="Masukkan nama"
-                required
-            >
-        </div>
-
-        <div class="form-group">
-            <label for="email">Email</label>
-
-            <input
-                type="email"
-                id="email"
-                name="email"
-                placeholder="contoh@email.com"
-                required
-            >
-        </div>
-
-        <div class="form-group">
-            <label for="subject">Subjek</label>
-
-            <input
-                type="text"
-                id="subject"
-                name="subject"
-                placeholder="Masukkan subjek"
-                required
-            >
-        </div>
-
-        <div class="form-group">
-            <label for="message">Pesan</label>
-
-            <textarea
-                id="message"
-                name="message"
-                rows="8"
-                placeholder="Tulis pesan..."
-                required
-            ></textarea>
-        </div>
-
-        <button type="submit" class="btn-primary">
-            KIRIM PESAN
-        </button>
-
-    </form>
-
+        <form action="{{ url('/kontak') }}" method="POST">
+            @csrf
+            <div class="contact-form-grid">
+                <div class="stack">
+                    <input type="text" name="subject" placeholder="Subject" value="{{ old('subject') }}" required>
+                    <input type="text" name="name" placeholder="Name" value="{{ old('name') }}" required>
+                    <input type="email" name="email" placeholder="Email" value="{{ old('email') }}" required>
+                </div>
+                <textarea name="message" placeholder="Message" required>{{ old('message') }}</textarea>
+            </div>
+            <div class="full-btn">
+                <button type="submit" class="btn-primary">KIRIM</button>
+            </div>
+        </form>
+    </div>
 </section>
 
 @endsection

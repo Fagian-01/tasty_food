@@ -6,7 +6,13 @@ use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\ContactController;
 
 Route::get('/', function () {
-    return view('welcome');
+    $latestNews = \App\Models\News::latest()->take(3)->get();
+    $latestGalleries = \App\Models\Gallery::latest()->take(6)->get();
+    return view('welcome', compact('latestNews', 'latestGalleries'));
+});
+
+Route::get('/tentang', function () {
+    return view('tentang');
 });
 
 Route::get('/berita', [NewsController::class, 'index']);
