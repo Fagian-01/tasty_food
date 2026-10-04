@@ -18,10 +18,6 @@
         <div class="success-message">{{ session('success') }}</div>
     @endif
 
-    <div class="admin-bar">
-        <a href="{{ url('/berita/create') }}" class="btn-primary">+ TAMBAH BERITA</a>
-    </div>
-
     @if($news->count())
         @php $featured = $news->first(); $others = $news->skip(1); @endphp
 
@@ -37,14 +33,6 @@
                 <h2>{{ strtoupper($featured->title) }}</h2>
                 <p>{{ Str::limit($featured->content, 280) }}</p>
                 <a href="{{ url('/berita/' . $featured->id) }}" class="btn-primary">BACA SELENGKAPNYA</a>
-                <div class="crud-actions">
-                    <a href="{{ url('/berita/' . $featured->id . '/edit') }}">EDIT</a>
-                    <form action="{{ url('/berita/' . $featured->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus berita ini?')">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="danger">HAPUS</button>
-                    </form>
-                </div>
             </div>
         </div>
     @else
@@ -72,14 +60,6 @@
                     <div class="card-foot">
                         <a class="read-more" href="{{ url('/berita/' . $item->id) }}">Baca selengkapnya</a>
                         <span class="dots">...</span>
-                    </div>
-                    <div class="crud-actions">
-                        <a href="{{ url('/berita/' . $item->id . '/edit') }}">EDIT</a>
-                        <form action="{{ url('/berita/' . $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus berita ini?')">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="danger">HAPUS</button>
-                        </form>
                     </div>
                 </div>
             </article>

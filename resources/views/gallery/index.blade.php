@@ -18,10 +18,6 @@
         <div class="success-message">{{ session('success') }}</div>
     @endif
 
-    <div class="admin-bar">
-        <a href="{{ url('/galeri/create') }}" class="btn-primary">+ TAMBAH GALERI</a>
-    </div>
-
     @if($galleries->count())
         <div class="gallery-slider" id="gallerySlider">
             @foreach($galleries->take(5) as $i => $g)
@@ -57,14 +53,6 @@
                         <div class="card-foot">
                             <a class="read-more" href="{{ url('/galeri/' . $gallery->id) }}">Lihat detail</a>
                             <span class="dots">...</span>
-                        </div>
-                        <div class="crud-actions">
-                            <a href="{{ url('/galeri/' . $gallery->id . '/edit') }}">EDIT</a>
-                            <form action="{{ url('/galeri/' . $gallery->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus galeri ini?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="danger">HAPUS</button>
-                            </form>
                         </div>
                     </div>
                 </article>

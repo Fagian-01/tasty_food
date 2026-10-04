@@ -26,7 +26,6 @@
 
     <div class="back-row">
         <a href="{{ url('/galeri') }}" class="btn-primary">&larr; KEMBALI KE GALERI</a>
-        <a href="{{ url('/galeri/' . $gallery->id . '/edit') }}" class="btn-primary" style="background:#fff;color:#111;border:1px solid #ddd;">EDIT</a>
     </div>
 </section>
 

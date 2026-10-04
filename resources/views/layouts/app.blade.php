@@ -60,7 +60,7 @@
                 <p>Kota Bandung, Jawa Barat</p>
             </div>
         </div>
-        <p class="footer-copy">Copyright &copy;{{ date('Y') }} Kairo Ramen. All rights reserved</p>
+        <p class="footer-copy">Copyright &copy;{{ date('Y') }} Kairo Ramen. All rights reserved &middot; <a href="{{ route('admin.login') }}" style="color:inherit;text-decoration:underline;">Admin</a></p>
     </footer>
 
     <script>

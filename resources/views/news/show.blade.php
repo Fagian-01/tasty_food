@@ -28,7 +28,6 @@
 
     <div class="back-row">
         <a href="{{ url('/berita') }}" class="btn-primary">&larr; KEMBALI KE BERITA</a>
-        <a href="{{ url('/berita/' . $news->id . '/edit') }}" class="btn-primary" style="background:#fff;color:#111;border:1px solid #ddd;">EDIT</a>
     </div>
 </section>
 
