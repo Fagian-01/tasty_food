@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $gallery->title . ' - Tasty Food')
+@section('title', $gallery->title . ' - Kairo Ramen')
 
 @section('content')
 
@@ -16,7 +16,7 @@
     <h1>{{ $gallery->title }}</h1>
     <p class="detail-meta">{{ $gallery->created_at->format('d M Y') }}</p>
 
-    <img class="detail-img" src="{{ asset('storage/' . $gallery->image) }}" alt="{{ $gallery->title }}">
+    <img class="detail-img detail-img--gallery" src="{{ asset('storage/' . $gallery->image) }}" alt="{{ $gallery->title }}">
 
     @if($gallery->description)
         <div class="detail-body">

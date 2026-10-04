@@ -1,24 +1,26 @@
 @extends('layouts.app')
 
-@section('title', 'Home - Tasty Food')
+@section('title', 'Home - Kairo Ramen')
 
 @section('content')
 
 {{-- HERO --}}
 <section class="hero">
     <div class="hero-content">
+        <p class="hero-kicker">JAPANESE COMFORT FOOD &middot; ラーメン</p>
         <div class="hero-rule"></div>
-        <h1><span class="thin">HEALTHY</span>TASTY FOOD</h1>
+        <h1><span class="thin">JAPANESE</span>KAIRO RAMEN</h1>
         <p>
-            Makanan yang lezat, sehat, dan dibuat dengan bahan-bahan
-            berkualitas untuk menemani setiap momenmu.
+            Japanese comfort food for every moment.
+            Semangkuk ramen hangat dengan kaldu autentik,
+            disajikan segar untuk menemani setiap momenmu.
         </p>
         <a href="{{ url('/tentang') }}" class="btn-primary">TENTANG KAMI</a>
     </div>
     <div class="hero-image">
         <img
-            src="https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=1000&q=80"
-            alt="Hidangan Tasty Food">
+            src="https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=1000&q=80"
+            alt="Semangkuk ramen Kairo Ramen">
     </div>
 </section>
 
@@ -27,10 +29,10 @@
     <div class="center-text">
         <p class="section-label">TENTANG KAMI</p>
         <p>
-            Tasty Food hadir untuk memberikan pengalaman menikmati makanan
-            yang lezat sekaligus berkualitas. Kami menggunakan bahan-bahan
-            pilihan dan menjaga setiap proses pengolahan agar menghasilkan
-            makanan yang sehat dan nikmat.
+            Kairo Ramen lahir dari kecintaan pada semangkuk ramen hangat.
+            Kami merebus kaldu perlahan, memakai mi segar setiap hari,
+            dan menyajikan Japanese comfort food yang sederhana,
+            hangat, dan bikin kembali lagi.
         </p>
         <div class="underline"></div>
     </div>
@@ -40,25 +42,59 @@
 <section class="features-band">
     <div class="features-grid">
         <div class="feature-card">
-            <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=300&q=80" alt="Bahan segar">
+            <img src="https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=300&q=80" alt="Kaldu 12 jam">
+            <h3>KALDU 12 JAM</h3>
+            <p>Kaldu ayam dan tulang direbus perlahan hingga gurih dan hangat.</p>
+        </div>
+        <div class="feature-card">
+            <img src="https://images.unsplash.com/photo-1496116218417-1a781b1c416c?auto=format&fit=crop&w=300&q=80" alt="Gyoza segar">
             <h3>BAHAN SEGAR</h3>
-            <p>Sayuran dan bahan pilihan yang segar setiap hari untuk cita rasa terbaik.</p>
+            <p>Mi, sayur, dan topping disiapkan segar setiap hari di dapur kami.</p>
         </div>
         <div class="feature-card">
-            <img src="https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=300&q=80" alt="Resep sehat">
-            <h3>RESEP SEHAT</h3>
-            <p>Diolah dengan gizi seimbang tanpa mengorbankan kelezatan hidangan.</p>
+            <img src="https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=300&q=80" alt="Resep autentik">
+            <h3>RESEP AUTENTIK</h3>
+            <p>Racikan shoyu, miso, dan tare khas Jepang dengan cita rasa seimbang.</p>
         </div>
         <div class="feature-card">
-            <img src="https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=300&q=80" alt="Cita rasa nusantara">
-            <h3>CITA RASA NUSANTARA</h3>
-            <p>Kekayaan kuliner Indonesia yang autentik dalam setiap sajian kami.</p>
+            <img src="https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=300&q=80" alt="Sajian hangat">
+            <h3>SAJIAN HANGAT</h3>
+            <p>Disajikan panas mengepul, porsi pas, nyaman untuk makan sendiri maupun bersama.</p>
         </div>
-        <div class="feature-card">
-            <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=300&q=80" alt="Sajian berkualitas">
-            <h3>SAJIAN BERKUALITAS</h3>
-            <p>Setiap piring disiapkan dengan teliti oleh tim dapur berpengalaman.</p>
-        </div>
+    </div>
+</section>
+
+{{-- SIGNATURE --}}
+<section class="sig-sec">
+    <div class="section-heading">
+        <p class="section-label">SIGNATURE</p>
+        <h2>FAVORIT DI KAIRO</h2>
+    </div>
+    <div class="sig-grid">
+        <article class="sig-card">
+            <img src="https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=800&q=80" alt="Signature shoyu ramen">
+            <div class="sig-body">
+                <h3>SHOYU RAMEN</h3>
+                <p>Mi kenyal, kaldu shoyu gurih, chashu lembut, telur ajitama, dan nori.</p>
+                <p class="price">Rp 38.000</p>
+            </div>
+        </article>
+        <article class="sig-card">
+            <img src="https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=800&q=80" alt="Chicken karaage donburi">
+            <div class="sig-body">
+                <h3>KARAAGE DONBURI</h3>
+                <p>Nasi hangat dengan karaage renyah, saus tare manis gurih, dan mayo.</p>
+                <p class="price">Rp 32.000</p>
+            </div>
+        </article>
+        <article class="sig-card">
+            <img src="https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=800&q=80" alt="Salmon sushi set">
+            <div class="sig-body">
+                <h3>SALMON SUSHI SET</h3>
+                <p>Set sushi salmon segar dengan nasi pulen dan wasabi yang pas.</p>
+                <p class="price">Rp 45.000</p>
+            </div>
+        </article>
     </div>
 </section>
 
@@ -74,7 +110,7 @@
             @foreach($latestNews as $item)
                 <article class="news-card">
                     <img
-                        src="{{ $item->image ? asset('storage/' . $item->image) : 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80' }}"
+                        src="{{ $item->image ? asset('storage/' . $item->image) : 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=800&q=80' }}"
                         alt="{{ $item->title }}">
                     <div class="news-card-content">
                         <p class="news-date">{{ $item->created_at->format('d M Y') }}</p>
@@ -91,10 +127,10 @@
     @else
         <div class="news-grid">
             <article class="news-card">
-                <img src="https://images.unsplash.com/photo-1567337710282-00832b415979?auto=format&fit=crop&w=800&q=80" alt="Makanan khas nusantara">
+                <img src="https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=800&q=80" alt="Menu ramen baru">
                 <div class="news-card-content">
-                    <h3>MAKANAN KHAS NUSANTARA</h3>
-                    <p>Jelajahi kekayaan kuliner Indonesia dari Sabang sampai Merauke.</p>
+                    <h3>MENU RAMEN BARU</h3>
+                    <p>Kenalan dengan miso butter ramen, kuah creamy favorit musim hujan.</p>
                     <div class="card-foot">
                         <a class="read-more" href="{{ url('/berita') }}">Baca selengkapnya</a>
                         <span class="dots">...</span>
@@ -102,10 +138,10 @@
                 </div>
             </article>
             <article class="news-card">
-                <img src="https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=800&q=80" alt="Tips memilih bahan">
+                <img src="https://images.unsplash.com/photo-1496116218417-1a781b1c416c?auto=format&fit=crop&w=800&q=80" alt="Gyoza homemade">
                 <div class="news-card-content">
-                    <h3>TIPS MEMILIH BAHAN SEGAR</h3>
-                    <p>Cara memilih sayur dan bahan makanan yang segar dan berkualitas.</p>
+                    <h3>GYOZA HOMEMADE</h3>
+                    <p>Gyoza dilipat satu per satu setiap pagi, renyah di luar juicy di dalam.</p>
                     <div class="card-foot">
                         <a class="read-more" href="{{ url('/berita') }}">Baca selengkapnya</a>
                         <span class="dots">...</span>
@@ -113,10 +149,10 @@
                 </div>
             </article>
             <article class="news-card">
-                <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80" alt="Menu sehat">
+                <img src="https://images.unsplash.com/photo-1553621042-f6e147245754?auto=format&fit=crop&w=800&q=80" alt="Sushi segar">
                 <div class="news-card-content">
-                    <h3>INSPIRASI MENU SEHAT</h3>
-                    <p>Ide menu sederhana yang lezat untuk aktivitas sehari-hari.</p>
+                    <h3>SUSHI SEGAR SETIAP HARI</h3>
+                    <p>Ikan segar pilihan dan nasi pulen, disiapkan setiap pagi.</p>
                     <div class="card-foot">
                         <a class="read-more" href="{{ url('/berita') }}">Baca selengkapnya</a>
                         <span class="dots">...</span>
@@ -138,22 +174,29 @@
         @if($latestGalleries->count())
             @foreach($latestGalleries as $gallery)
                 <a href="{{ url('/galeri/' . $gallery->id) }}">
-                    <img src="{{ asset('storage/' . $gallery->image) }}" alt="{{ $gallery->title }}" style="width:100%;height:300px;object-fit:cover;display:block;">
+                    <img src="{{ asset('storage/' . $gallery->image) }}" alt="{{ $gallery->title }}">
                 </a>
             @endforeach
         @else
-            <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=700&q=80" alt="Salad segar">
-            <img src="https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=700&q=80" alt="Salmon panggang">
-            <img src="https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=700&q=80" alt="Salad buah">
-            <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=700&q=80" alt="Hidangan utama">
-            <img src="https://images.unsplash.com/photo-1473093295043-cdd812d0e601?auto=format&fit=crop&w=700&q=80" alt="Pasta sehat">
-            <img src="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&w=700&q=80" alt="Pancake buah">
+            <img src="https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=700&q=80" alt="Shoyu ramen">
+            <img src="https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=700&q=80" alt="Miso ramen">
+            <img src="https://images.unsplash.com/photo-1553621042-f6e147245754?auto=format&fit=crop&w=700&q=80" alt="Sushi set">
+            <img src="https://images.unsplash.com/photo-1496116218417-1a781b1c416c?auto=format&fit=crop&w=700&q=80" alt="Gyoza">
+            <img src="https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=700&q=80" alt="Donburi">
+            <img src="https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=700&q=80" alt="Karaage">
         @endif
     </div>
 
     <div class="gallery-button">
         <a href="{{ url('/galeri') }}" class="btn-primary">LIHAT LEBIH BANYAK</a>
     </div>
+</section>
+
+{{-- VISIT --}}
+<section class="visit-band">
+    <h2>LAPAR? <span>MAMPIR KE KAIRO.</span></h2>
+    <p>Kedai kami buka setiap hari 10.00 &ndash; 22.00. Hangat, cepat, dan ramah di kantong.</p>
+    <a href="{{ url('/kontak') }}" class="btn-primary">HUBUNGI KAMI</a>
 </section>
 
 @endsection

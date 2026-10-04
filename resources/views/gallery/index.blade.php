@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Galeri Kami - Tasty Food')
+@section('title', 'Galeri Kami - Kairo Ramen')
 
 @section('content')
 
@@ -8,7 +8,7 @@
 <section class="page-hero">
     <div>
         <h1>GALERI KAMI</h1>
-        <p>Dokumentasi hidangan dan momen Tasty Food</p>
+        <p>Ramen, gyoza, sushi, dan momen hangat di Kairo Ramen</p>
     </div>
 </section>
 

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Tentang Kami - Tasty Food')
+@section('title', 'Tentang Kami - Kairo Ramen')
 
 @section('content')
 
@@ -8,7 +8,7 @@
 <section class="page-hero">
     <div>
         <h1>TENTANG KAMI</h1>
-        <p>Mengenal lebih dekat Tasty Food</p>
+        <p>Cerita di balik semangkuk Kairo Ramen</p>
     </div>
 </section>
 
@@ -16,21 +16,23 @@
 <section class="section-pad bg-soft">
     <div class="split">
         <div>
-            <h2>TASTY FOOD</h2>
+            <h2>KAIRO RAMEN</h2>
             <p class="lead">
-                Kami percaya makanan yang baik berasal dari bahan yang baik
-                dan diolah dengan penuh ketelitian.
+                Japanese comfort food for every moment.
+                Hangat, sederhana, dan selalu bikin kembali lagi.
             </p>
             <p>
-                Tasty Food hadir untuk memberikan pengalaman menikmati makanan
-                yang lezat sekaligus berkualitas. Kami menggunakan bahan-bahan
-                pilihan dan menjaga setiap proses pengolahan agar menghasilkan
-                hidangan yang sehat, bergizi, dan nikmat untuk semua kalangan.
+                Kairo Ramen berawal dari kedai kecil yang hanya menjual
+                satu menu: shoyu ramen. Kaldunya kami rebus perlahan
+                hingga 12 jam, mienya dibuat segar setiap hari, dan
+                toppingnya dipilih satu per satu. Kini menu kami bertambah
+                &mdash; gyoza, karaage, donburi, hingga sushi &mdash; tapi
+                prinsipnya tetap sama: semangkuk kehangatan yang jujur.
             </p>
         </div>
         <div class="duo-img">
-            <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=700&q=80" alt="Salad segar Tasty Food">
-            <img src="https://images.unsplash.com/photo-1577219491135-ce391730fb2c?auto=format&fit=crop&w=700&q=80" alt="Chef Tasty Food sedang memasak">
+            <img src="https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=700&q=80" alt="Ramen Kairo Ramen">
+            <img src="https://images.unsplash.com/photo-1552611052-33e04de081de?auto=format&fit=crop&w=700&q=80" alt="Chef Kairo Ramen sedang memasak">
         </div>
     </div>
 </section>
@@ -39,15 +41,15 @@
 <section class="section-pad">
     <div class="split">
         <div class="duo-img">
-            <img src="https://images.unsplash.com/photo-1567337710282-00832b415979?auto=format&fit=crop&w=700&q=80" alt="Hidangan nusantara">
-            <img src="https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=700&q=80" alt="Ramen Tasty Food">
+            <img src="https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=700&q=80" alt="Miso ramen">
+            <img src="https://images.unsplash.com/photo-1553621042-f6e147245754?auto=format&fit=crop&w=700&q=80" alt="Sushi Kairo Ramen">
         </div>
         <div>
             <h2>VISI</h2>
             <p>
-                Menjadi pilihan utama masyarakat dalam menikmati makanan sehat
-                dan lezat, serta turut melestarikan kekayaan kuliner nusantara
-                dengan sentuhan modern yang dapat dinikmati semua generasi.
+                Menjadi kedai Japanese comfort food favorit yang membuat
+                masakan Jepang terasa dekat, hangat, dan terjangkau untuk
+                semua orang &mdash; satu mangkuk dalam satu waktu.
             </p>
         </div>
     </div>
@@ -59,14 +61,14 @@
         <div>
             <h2>MISI</h2>
             <p>
-                Menyajikan hidangan berkualitas dari bahan-bahan segar pilihan,
-                menjaga konsistensi rasa dan kebersihan dalam setiap proses,
-                serta memberikan pelayanan terbaik agar setiap pelanggan
-                mendapatkan pengalaman makan yang berkesan.
+                Menyajikan ramen dan hidangan Jepang dengan kaldu autentik
+                dan bahan segar setiap hari, menjaga konsistensi rasa dan
+                kebersihan dapur, serta melayani setiap tamu seperti teman
+                yang pulang ke rumah.
             </p>
         </div>
         <div class="single-img">
-            <img src="https://images.unsplash.com/photo-1466637574441-749b8f19452f?auto=format&fit=crop&w=900&q=80" alt="Bahan-bahan segar">
+            <img src="https://images.unsplash.com/photo-1496116218417-1a781b1c416c?auto=format&fit=crop&w=900&q=80" alt="Gyoza segar Kairo Ramen">
         </div>
     </div>
 </section>

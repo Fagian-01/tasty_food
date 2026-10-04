@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Berita Kami - Tasty Food')
+@section('title', 'Berita Kami - Kairo Ramen')
 
 @section('content')
 
@@ -8,7 +8,7 @@
 <section class="page-hero">
     <div>
         <h1>BERITA KAMI</h1>
-        <p>Kabar terbaru seputar Tasty Food</p>
+        <p>Kabar terbaru dari dapur Kairo Ramen</p>
     </div>
 </section>
 
@@ -28,7 +28,7 @@
         <div class="news-feature">
             <div>
                 <img
-                    src="{{ $featured->image ? asset('storage/' . $featured->image) : 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=900&q=80' }}"
+                    src="{{ $featured->image ? asset('storage/' . $featured->image) : 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=900&q=80' }}"
                     alt="{{ $featured->title }}"
                 >
             </div>
@@ -62,7 +62,7 @@
         @foreach($others as $item)
             <article class="news-card">
                 <img
-                    src="{{ $item->image ? asset('storage/' . $item->image) : 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80' }}"
+                    src="{{ $item->image ? asset('storage/' . $item->image) : 'https://images.unsplash.com/photo-1553621042-f6e147245754?auto=format&fit=crop&w=800&q=80' }}"
                     alt="{{ $item->title }}"
                 >
                 <div class="news-card-content">

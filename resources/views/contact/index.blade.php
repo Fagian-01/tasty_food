@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Kontak Kami - Tasty Food')
+@section('title', 'Kontak Kami - Kairo Ramen')
 
 @section('content')
 
@@ -8,7 +8,7 @@
 <section class="page-hero">
     <div>
         <h1>KONTAK KAMI</h1>
-        <p>Hubungi kami untuk pertanyaan dan pemesanan</p>
+        <p>Reservasi, pertanyaan menu, atau sekadar menyapa</p>
     </div>
 </section>
 
@@ -50,7 +50,7 @@
             <div>
                 <div class="ico">&#9993;</div>
                 <h3>EMAIL</h3>
-                <p>tastyfood@gmail.com</p>
+                <p>kairoramen@gmail.com</p>
             </div>
             <div>
                 <div class="ico">&#9742;</div>
@@ -69,7 +69,7 @@
 {{-- MAP --}}
 <section class="map-sec">
     <iframe
-        title="Lokasi Tasty Food"
+        title="Lokasi Kairo Ramen"
         src="https://www.google.com/maps?q=Bandung,Jawa+Barat&output=embed"
         loading="lazy"
     ></iframe>

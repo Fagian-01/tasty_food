@@ -1,17 +1,20 @@
 @extends('layouts.app')
 
-@section('title', 'Edit Berita - Tasty Food')
+@section('title', 'Edit Berita - Kairo Ramen')
 
 @section('content')
 
 <section class="page-hero" style="min-height:300px;">
     <div>
         <h1>EDIT BERITA</h1>
-        <p>Perbarui kabar Tasty Food</p>
+        <p>Perbarui kabar Kairo Ramen</p>
     </div>
 </section>
 
 <section class="form-sec">
+    <div class="back-row" style="margin:0 0 24px;">
+        <a href="{{ url('/berita') }}" class="btn-primary">&larr; KEMBALI KE BERITA</a>
+    </div>
     <div class="form-card">
         @if($errors->any())
             <div class="error-box">

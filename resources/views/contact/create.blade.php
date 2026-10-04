@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Kirim Pesan - Tasty Food')
+@section('title', 'Kirim Pesan - Kairo Ramen')
 
 @section('content')
 
@@ -13,6 +13,9 @@
 
 <section class="contact-form-sec">
     <div style="max-width:1100px;margin:0 auto;">
+        <div class="back-row" style="margin:0 0 24px;">
+            <a href="{{ url('/kontak') }}" class="btn-primary">&larr; KEMBALI KE KONTAK</a>
+        </div>
         <h2>KIRIM PESAN</h2>
 
         @if($errors->any())

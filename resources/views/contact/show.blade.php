@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $contact->subject . ' - Tasty Food')
+@section('title', $contact->subject . ' - Kairo Ramen')
 
 @section('content')
 
