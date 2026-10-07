@@ -17,10 +17,11 @@
         </p>
         <a href="{{ url('/tentang') }}" class="btn-primary">TENTANG KAMI</a>
     </div>
-    <div class="hero-image">
+    <div class="hero-visual">
         <img
-            src="https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=1000&q=80"
-            alt="Semangkuk ramen Kairo Ramen">
+            src="{{ asset('images/hero-ramen-cutout.png') }}"
+            alt="Mangkuk ramen Kairo Ramen"
+            fetchpriority="high">
     </div>
 </section>
 
@@ -71,30 +72,32 @@
         <h2>FAVORIT DI KAIRO</h2>
     </div>
     <div class="sig-grid">
-        <article class="sig-card">
-            <img src="https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=800&q=80" alt="Signature shoyu ramen">
-            <div class="sig-body">
-                <h3>SHOYU RAMEN</h3>
-                <p>Mi kenyal, kaldu shoyu gurih, chashu lembut, telur ajitama, dan nori.</p>
-                <p class="price">Rp 38.000</p>
-            </div>
-        </article>
-        <article class="sig-card">
-            <img src="https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=800&q=80" alt="Chicken karaage donburi">
-            <div class="sig-body">
-                <h3>KARAAGE DONBURI</h3>
-                <p>Nasi hangat dengan karaage renyah, saus tare manis gurih, dan mayo.</p>
-                <p class="price">Rp 32.000</p>
-            </div>
-        </article>
-        <article class="sig-card">
-            <img src="https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=800&q=80" alt="Salmon sushi set">
-            <div class="sig-body">
-                <h3>SALMON SUSHI SET</h3>
-                <p>Set sushi salmon segar dengan nasi pulen dan wasabi yang pas.</p>
-                <p class="price">Rp 45.000</p>
-            </div>
-        </article>
+        @if(isset($featuredMenus) && $featuredMenus->count())
+            @foreach($featuredMenus as $menu)
+                <article class="sig-card">
+                    <img
+                        src="{{ $menu->image ? asset('storage/' . $menu->image) : asset('images/hero-ramen-cutout.png') }}"
+                        alt="{{ $menu->name }}"
+                        loading="lazy">
+                    <div class="sig-body">
+                        @if($menu->category)
+                            <p class="menu-cat">{{ strtoupper($menu->category) }}</p>
+                        @endif
+                        <h3>{{ strtoupper($menu->name) }}</h3>
+                        @if($menu->description)
+                            <p class="menu-desc">{{ $menu->description }}</p>
+                        @endif
+                        <p class="price">Rp {{ number_format($menu->price, 0, ',', '.') }}</p>
+                    </div>
+                </article>
+            @endforeach
+        @else
+        <div class="sig-empty">
+            <p class="empty-title">Signature menu segera hadir.</p>
+            <p>Dapur kami sedang menyiapkan pilihan terbaik. Sementara itu, lihat semua menu yang tersedia.</p>
+            <a href="{{ route('menu.index') }}" class="btn-primary">LIHAT SEMUA MENU</a>
+        </div>
+        @endif
     </div>
 </section>
 

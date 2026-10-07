@@ -17,7 +17,9 @@
                 <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">Dashboard</a>
                 <a href="{{ route('admin.berita.index') }}" class="{{ request()->routeIs('admin.berita.*') ? 'active' : '' }}">Berita</a>
                 <a href="{{ route('admin.galeri.index') }}" class="{{ request()->routeIs('admin.galeri.*') ? 'active' : '' }}">Galeri</a>
-                <a href="{{ route('admin.kontak.index') }}" class="{{ request()->routeIs('admin.kontak.*') ? 'active' : '' }}">Pesan Masuk</a>
+                <a href="{{ route('admin.menu.index') }}" class="{{ request()->routeIs('admin.menu.*') ? 'active' : '' }}">Menu</a>
+                <a href="{{ route('admin.orders.index') }}" class="{{ request()->routeIs('admin.orders.*') ? 'active' : '' }}">Pesanan{{ ($pendingOrders ?? 0) > 0 ? ' ('.$pendingOrders.')' : '' }}</a>
+                <a href="{{ route('admin.kontak.index') }}" class="{{ request()->routeIs('admin.kontak.*') ? 'active' : '' }}">Pesan</a>
                 <a href="{{ url('/') }}" target="_blank" rel="noopener">Lihat Website</a>
             </nav>
             <form action="{{ route('admin.logout') }}" method="POST" class="admin-logout-side">

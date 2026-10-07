@@ -20,6 +20,7 @@
                 <a href="{{ url('/tentang') }}" class="{{ request()->is('tentang') ? 'active' : '' }}">TENTANG</a>
                 <a href="{{ url('/berita') }}" class="{{ request()->is('berita*') ? 'active' : '' }}">BERITA</a>
                 <a href="{{ url('/galeri') }}" class="{{ request()->is('galeri*') ? 'active' : '' }}">GALERI</a>
+                <a href="{{ url('/menu') }}" class="{{ request()->is('menu*') ? 'active' : '' }}">MENU</a>
                 <a href="{{ url('/kontak') }}" class="{{ request()->is('kontak*') ? 'active' : '' }}">KONTAK</a>
             </div>
         </nav>

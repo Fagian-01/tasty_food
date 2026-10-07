@@ -19,6 +19,11 @@ class ContactController extends Controller
 
     public function show(Contact $contact): View
     {
+        if ($contact->status === 'unread') {
+            $contact->update(['status' => 'read']);
+            $contact->refresh();
+        }
+
         return view('admin.contact.show', compact('contact'));
     }
 
@@ -48,5 +53,21 @@ class ContactController extends Controller
 
         return redirect()->route('admin.kontak.index')
             ->with('success', 'Pesan berhasil dihapus!');
+    }
+
+    public function reply(Request $request, Contact $contact): RedirectResponse
+    {
+        $validated = $request->validate([
+            'admin_reply' => 'required|string|max:5000',
+        ]);
+
+        $contact->update([
+            'admin_reply' => $validated['admin_reply'],
+            'replied_at' => now(),
+            'status' => 'replied',
+        ]);
+
+        return redirect()->route('admin.kontak.show', $contact)
+            ->with('success', 'Balasan berhasil disimpan!');
     }
 }

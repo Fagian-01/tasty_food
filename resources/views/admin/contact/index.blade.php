@@ -17,6 +17,7 @@
                     <tr>
                         <th>Subject</th>
                         <th>Pengirim</th>
+                        <th>Status</th>
                         <th>Tanggal</th>
                         <th style="text-align:right;">Aksi</th>
                     </tr>
@@ -29,6 +30,7 @@
                                 <small class="admin-muted">{{ \Str::limit($contact->message, 70) }}</small>
                             </td>
                             <td>{{ $contact->name }}<br><small class="admin-muted">{{ $contact->email }}</small></td>
+                            <td><span class="status-badge status-{{ $contact->status ?? 'unread' }}">{{ $contact->statusLabel() }}</span></td>
                             <td>{{ $contact->created_at->format('d M Y') }}</td>
                             <td>
                                 <div class="row-actions">

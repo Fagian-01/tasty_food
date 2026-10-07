@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Gallery;
+use App\Models\Menu;
 use App\Models\News;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Http;
@@ -81,6 +82,43 @@ class KairoDemoContentSeeder extends Seeder
         }
 
         $this->command?->info("KairoDemoContentSeeder selesai: {$newsCount} berita baru, {$galleryCount} galeri baru (total: ".News::count().' berita, '.Gallery::count().' galeri).');
+
+        $menuCount = 0;
+        foreach ($this->menuItems() as $item) {
+            $path = $this->fetchImage($item['image_url'], 'menu/'.$item['slug'].'.jpg');
+            if (! $path) {
+                $this->command?->warn("Lewati menu [{$item['slug']}]: gambar gagal diunduh dan belum ada file lokal.");
+                continue;
+            }
+
+            $existing = Menu::where('slug', $item['slug'])->first();
+            if ($existing) {
+                $existing->update([
+                    'name' => $item['name'],
+                    'image' => $path,
+                    'description' => $item['description'],
+                    'price' => $item['price'],
+                    'category' => $item['category'],
+                    'is_available' => true,
+                ]);
+            } else {
+                Menu::create([
+                    'name' => $item['name'],
+                    'slug' => $item['slug'],
+                    'image' => $path,
+                    'description' => $item['description'],
+                    'price' => $item['price'],
+                    'category' => $item['category'],
+                    'is_available' => true,
+                    'is_featured' => $item['featured'] ?? false,
+                    'created_at' => $item['created_at'],
+                    'updated_at' => $item['created_at'],
+                ]);
+                $menuCount++;
+            }
+        }
+
+        $this->command?->info("Menu demo: {$menuCount} baru (total: ".Menu::count().' menu).');
     }
 
     /**
@@ -263,6 +301,86 @@ class KairoDemoContentSeeder extends Seeder
                 'image_url' => 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=1200&q=80',
                 'description' => 'Tim dapur kami menyiapkan setiap hidangan dengan bahan segar dan ketelitian.',
                 'created_at' => $day(12),
+            ],
+        ];
+    }
+
+    /** @return array<int, array{name:string,slug:string,image_url:string,description:string,price:int,category:string,featured:bool,created_at:\DateTime}> */
+    protected function menuItems(): array
+    {
+        $now = now();
+        $day = fn (int $d) => (clone $now)->subDays($d);
+
+        return [
+            [
+                'name' => 'Shoyu Ramen',
+                'slug' => 'shoyu-ramen',
+                'image_url' => 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=1200&q=80',
+                'description' => 'Mi kenyal, kaldu shoyu gurih yang direbus 12 jam, chashu lembut, telur ajitama, dan nori.',
+                'price' => 38000,
+                'category' => 'Ramen',
+                'featured' => true,
+                'created_at' => $day(1),
+            ],
+            [
+                'name' => 'Spicy Miso Ramen',
+                'slug' => 'spicy-miso-ramen',
+                'image_url' => 'https://images.unsplash.com/photo-1591814468924-caf88d1232e1?auto=format&fit=crop&w=1200&q=80',
+                'description' => 'Kuah miso creamy dengan racikan cabai spesial, tiga level kepedasan, topping daging cincang dan jagung manis.',
+                'price' => 42000,
+                'category' => 'Ramen',
+                'featured' => true,
+                'created_at' => $day(2),
+            ],
+            [
+                'name' => 'Tonkotsu Ramen',
+                'slug' => 'tonkotsu-ramen',
+                'image_url' => 'https://images.unsplash.com/photo-1557872943-16a5ac26437e?auto=format&fit=crop&w=1200&q=80',
+                'description' => 'Kaldu tulang yang kental dan gurih, mi tipis, chashu tebal, jamur kikurage, dan daun bawang.',
+                'price' => 45000,
+                'category' => 'Ramen',
+                'featured' => true,
+                'created_at' => $day(3),
+            ],
+            [
+                'name' => 'Gyoza',
+                'slug' => 'gyoza',
+                'image_url' => 'https://images.unsplash.com/photo-1496116218417-1a781b1c416c?auto=format&fit=crop&w=1200&q=80',
+                'description' => 'Gyoza ayam dan sayur yang dilipat satu per satu setiap pagi, renyah di luar dan juicy di dalam.',
+                'price' => 25000,
+                'category' => 'Side Dish',
+                'featured' => false,
+                'created_at' => $day(4),
+            ],
+            [
+                'name' => 'Karaage Donburi',
+                'slug' => 'karaage-donburi',
+                'image_url' => 'https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=1200&q=80',
+                'description' => 'Nasi hangat dengan ayam karaage renyah, saus tare manis gurih, dan mayo khas Kairo.',
+                'price' => 32000,
+                'category' => 'Donburi',
+                'featured' => false,
+                'created_at' => $day(5),
+            ],
+            [
+                'name' => 'Salmon Sushi Set',
+                'slug' => 'salmon-sushi-set',
+                'image_url' => 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=1200&q=80',
+                'description' => 'Set sushi salmon segar dengan nasi pulen, wasabi yang pas, dan acar jahe.',
+                'price' => 45000,
+                'category' => 'Sushi',
+                'featured' => false,
+                'created_at' => $day(6),
+            ],
+            [
+                'name' => 'Chicken Katsu Curry Rice',
+                'slug' => 'chicken-katsu-curry-rice',
+                'image_url' => 'https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=1200&q=80',
+                'description' => 'Nasi hangat dengan katsu ayam renyah disiram kari Jepang yang gurih dan hangat.',
+                'price' => 35000,
+                'category' => 'Rice Bowl',
+                'featured' => false,
+                'created_at' => $day(7),
             ],
         ];
     }
