@@ -105,12 +105,23 @@ class OrderController extends Controller
 
             $order->items()->createMany($lines);
 
+            // Payment manual transfer: order lahir dengan payment = unpaid.
+            // Nominal dari total server-side. Metode + bukti diisi customer
+            // di halaman pembayaran, lalu diverifikasi admin.
+            $order->payment()->create([
+                'amount' => $total,
+                'status' => 'unpaid',
+            ]);
+
             return $order;
         });
 
         Cart::clear();
 
-        return redirect()->route('orders.success', ['order_code' => $order->order_code]);
+        // Flow baru: checkout LANGSUNG masuk pembayaran (tanpa halaman
+        // perantara success dengan dua pilihan). Customer bayar dulu,
+        // baru tracking terbuka setelah admin approve.
+        return redirect()->route('payments.show', ['order_code' => $order->order_code]);
     }
 
     private function generateOrderCode(): string
@@ -131,11 +142,12 @@ class OrderController extends Controller
         return 'KAIRO-'.now()->format('YmdHis').'-'.random_int(100, 999);
     }
 
-    public function success(string $order_code): View
+    public function success(string $order_code): RedirectResponse
     {
-        $order = Order::where('order_code', $order_code)->firstOrFail();
-
-        return view('orders.success', compact('order'));
+        // Halaman perantara success dihapus dari flow — route lama
+        // dipertahankan agar link/bookmark lama tidak 404, langsung
+        // diteruskan ke pembayaran.
+        return redirect()->route('payments.show', $order_code);
     }
 
     public function trackForm(): View
@@ -160,9 +172,18 @@ class OrderController extends Controller
         return redirect()->route('orders.show', ['order_code' => $order->order_code]);
     }
 
-    public function show(string $order_code): View
+    public function show(string $order_code): View|RedirectResponse
     {
-        $order = Order::with('items')->where('order_code', $order_code)->firstOrFail();
+        $order = Order::with(['items', 'payment'])->where('order_code', $order_code)->firstOrFail();
+
+        // Gate tracking: sebelum pembayaran diverifikasi (paid) + order
+        // approved, customer TIDAK melihat tracking proses. Kembalikan ke
+        // halaman pembayaran dengan status yang sesuai (unpaid / menunggu
+        // verifikasi / ditolak → upload ulang). Order rejected tetap tampil
+        // agar customer tahu pesanannya ditolak.
+        if ($order->status === 'pending' && ($order->payment?->status ?? 'unpaid') !== 'paid') {
+            return redirect()->route('payments.show', $order->order_code);
+        }
 
         return view('orders.show', compact('order'));
     }

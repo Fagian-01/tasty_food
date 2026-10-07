@@ -41,6 +41,32 @@
             <div class="error-box">Maaf, pesanan ini ditolak admin. Hubungi kami untuk info lebih lanjut.</div>
         @endif
 
+        @php $payment = $order->payment; @endphp
+        <div class="order-summary pay-track">
+            <h2>Pembayaran</h2>
+            @if(! $payment || $payment->status === 'unpaid')
+                <p class="order-muted">Belum ada pembayaran. Selesaikan pembayaran agar pesanan diverifikasi.</p>
+                @if($order->status === 'pending')
+                    <div class="order-actions-center" style="justify-content:flex-start;margin-top:14px;">
+                        <a href="{{ route('payments.show', $order->order_code) }}" class="btn-primary">BAYAR SEKARANG</a>
+                    </div>
+                @endif
+            @elseif($payment->status === 'waiting_verification')
+                <p><span class="status-badge status-cooking">⏳ Menunggu verifikasi admin</span></p>
+                <p class="order-muted" style="margin-top:8px;">Bukti terkirim. Pesanan masuk dapur setelah disetujui.</p>
+            @elseif($payment->status === 'paid')
+                <p><span class="status-badge status-delivered">✓ Pembayaran berhasil diverifikasi</span></p>
+            @elseif($payment->status === 'rejected')
+                <p><span class="status-badge status-rejected">✕ Pembayaran ditolak</span></p>
+                <p class="order-muted" style="margin-top:8px;">Silakan upload bukti pembayaran kembali.</p>
+                @if($order->status === 'pending')
+                    <div class="order-actions-center" style="justify-content:flex-start;margin-top:14px;">
+                        <a href="{{ route('payments.show', $order->order_code) }}" class="btn-primary">UPLOAD ULANG BUKTI</a>
+                    </div>
+                @endif
+            @endif
+        </div>
+
         @php
             $steps = [
                 'pending' => 'Pesanan dibuat',

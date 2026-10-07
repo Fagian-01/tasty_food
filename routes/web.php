@@ -7,6 +7,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\MenuController as AdminMenuController;
@@ -14,6 +15,8 @@ use App\Http\Controllers\Admin\NewsController as AdminNewsController;
 use App\Http\Controllers\Admin\GalleryController as AdminGalleryController;
 use App\Http\Controllers\Admin\ContactController as AdminContactController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\Admin\PaymentController as AdminPaymentController;
+use App\Http\Controllers\Admin\PaymentMethodController as AdminPaymentMethodController;
 
 // ---------- PUBLIC ----------
 Route::get('/', function () {
@@ -57,6 +60,11 @@ Route::get('/lacak-pesanan', [OrderController::class, 'trackForm'])->name('order
 Route::post('/lacak-pesanan', [OrderController::class, 'track'])->name('orders.track.post');
 Route::get('/pesanan/{order_code}', [OrderController::class, 'show'])->name('orders.show');
 Route::post('/pesanan/{order_code}/konfirmasi', [OrderController::class, 'confirm'])->name('orders.confirm');
+
+// ---------- PAYMENT (CUSTOMER, MANUAL TRANSFER) ----------
+// Diakses via order_code seperti tracking — tanpa login baru.
+Route::get('/pembayaran/{order_code}', [PaymentController::class, 'show'])->name('payments.show');
+Route::post('/pembayaran/{order_code}', [PaymentController::class, 'store'])->name('payments.store');
 
 // ---------- ADMIN AUTH ----------
 Route::get('/admin/login', [AdminAuthController::class, 'showLogin'])->name('admin.login');
@@ -103,4 +111,16 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::post('/pesanan/{order}/approve', [AdminOrderController::class, 'approve'])->name('orders.approve');
     Route::post('/pesanan/{order}/reject', [AdminOrderController::class, 'reject'])->name('orders.reject');
     Route::post('/pesanan/{order}/advance', [AdminOrderController::class, 'advance'])->name('orders.advance');
+
+    // Pembayaran: approve/reject bukti transfer (masih di detail order).
+    Route::post('/pesanan/{order}/payment/approve', [AdminPaymentController::class, 'approve'])->name('payments.approve');
+    Route::post('/pesanan/{order}/payment/reject', [AdminPaymentController::class, 'reject'])->name('payments.reject');
+
+    // Kelola Metode Pembayaran (auth admin existing, tanpa login baru).
+    Route::get('/metode-pembayaran', [AdminPaymentMethodController::class, 'index'])->name('payment-methods.index');
+    Route::get('/metode-pembayaran/create', [AdminPaymentMethodController::class, 'create'])->name('payment-methods.create');
+    Route::post('/metode-pembayaran', [AdminPaymentMethodController::class, 'store'])->name('payment-methods.store');
+    Route::get('/metode-pembayaran/{payment_method}/edit', [AdminPaymentMethodController::class, 'edit'])->name('payment-methods.edit');
+    Route::put('/metode-pembayaran/{payment_method}', [AdminPaymentMethodController::class, 'update'])->name('payment-methods.update');
+    Route::delete('/metode-pembayaran/{payment_method}', [AdminPaymentMethodController::class, 'destroy'])->name('payment-methods.destroy');
 });

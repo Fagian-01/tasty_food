@@ -4,8 +4,11 @@ namespace Tests\Feature;
 
 use App\Models\Menu;
 use App\Models\Order;
+use App\Models\PaymentMethod;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class OrderFlowTest extends TestCase
@@ -23,6 +26,7 @@ class OrderFlowTest extends TestCase
         $_SERVER['DB_CONNECTION'] = 'mysql';
         $_SERVER['DB_DATABASE'] = 'tasty_food_testing';
         parent::setUp();
+        Storage::fake('public');
     }
 
     private function makeMenu(array $over = []): Menu
@@ -55,13 +59,15 @@ class OrderFlowTest extends TestCase
         $res->assertRedirect();
         $order = Order::first();
         $this->assertNotNull($order);
-        $this->assertMatchesRegularExpression('/^KAIRO-\d{4,}$/', $order->order_code);
+        $this->assertMatchesRegularExpression('/^KAIRO-\\d{4,}$/', $order->order_code);
         $this->assertSame('pending', $order->status);
         $this->assertSame(76000, (int) $order->total_amount);
         $this->assertSame(2, (int) $order->items()->first()->quantity);
         $this->assertSame('Shoyu Ramen', $order->items()->first()->menu_name);
         // Cart dikosongkan.
         $this->assertEmpty(session('cart', []));
+        // Flow baru: order lahir dengan payment unpaid.
+        $this->assertSame('unpaid', $order->fresh()->payment->status);
     }
 
     public function test_unavailable_menu_blocked_at_checkout(): void
@@ -93,8 +99,17 @@ class OrderFlowTest extends TestCase
 
     public function test_full_admin_flow_to_completed(): void
     {
+        // Flow baru: bayar dulu (upload bukti → waiting_verification),
+        // SATU tombol approve (paid + approved), baru flow dapur jalan.
         $admin = $this->makeAdmin();
         $menu = $this->makeMenu();
+        PaymentMethod::create([
+            'type' => 'dana',
+            'name' => 'DANA',
+            'account_name' => 'KAIRO RAMEN',
+            'account_number' => '081234567890',
+            'is_active' => true,
+        ]);
 
         $this->withSession(['cart' => [$menu->id => 1]])
             ->post('/checkout', [
@@ -104,11 +119,32 @@ class OrderFlowTest extends TestCase
             ]);
 
         $order = Order::first();
+        $method = PaymentMethod::first();
 
-        // approve
+        // Checkout langsung ke payment; tracking dikunci sebelum approve.
+        $this->get(route('orders.show', $order->order_code))
+            ->assertRedirect(route('payments.show', $order->order_code));
+
+        // Upload bukti → waiting_verification, order masih pending.
+        $this->post(route('payments.store', $order->order_code), [
+            'payment_method' => $method->id,
+            'proof_image' => UploadedFile::fake()->create('bukti.jpg', 500, 'image/jpeg'),
+        ])->assertRedirect();
+        $this->assertSame('waiting_verification', $order->fresh()->payment->status);
+        $this->assertSame('pending', $order->fresh()->status);
+
+        // Approve terpisah DITOLAK (tidak ada perubahan).
         $this->actingAs($admin)->post(route('admin.orders.approve', $order));
+        $this->assertSame('pending', $order->fresh()->status);
+
+        // SATU tombol approve: paid + approved sekaligus.
+        $this->actingAs($admin)->post(route('admin.payments.approve', $order));
+        $this->assertSame('paid', $order->fresh()->payment->status);
         $this->assertSame('approved', $order->fresh()->status);
         $this->assertNotNull($order->fresh()->approved_at);
+
+        // Tracking terbuka setelah approve.
+        $this->get(route('orders.show', $order->order_code))->assertOk();
 
         // advance bertahap: cooking -> ready -> delivering -> delivered
         foreach (['cooking', 'ready', 'delivering', 'delivered'] as $expected) {
@@ -145,7 +181,7 @@ class OrderFlowTest extends TestCase
         $this->assertSame('rejected', $order->fresh()->status);
         $this->assertNotNull($order->fresh()->rejected_at);
 
-        // approve setelah reject harus ditolak
+        // approve terpisah sudah tidak berlaku: tetap rejected
         $this->actingAs($admin)->post(route('admin.orders.approve', $order));
         $this->assertSame('rejected', $order->fresh()->status);
     }
@@ -164,6 +200,96 @@ class OrderFlowTest extends TestCase
         $this->post(route('orders.confirm', $order->order_code));
         // masih pending, tidak berubah
         $this->assertSame('pending', $order->fresh()->status);
+    }
+
+    public function test_checkout_redirects_straight_to_payment(): void
+    {
+        $menu = $this->makeMenu();
+        $res = $this->withSession(['cart' => [$menu->id => 1]])
+            ->post('/checkout', [
+                'customer_name' => 'Bayar',
+                'customer_phone' => '08111',
+                'customer_address' => 'Jl Test',
+                'latitude' => '-6.9',
+                'longitude' => '107.6',
+                'address_note' => 'Patokan gang',
+            ]);
+
+        $order = Order::firstOrFail();
+        $res->assertRedirect(route('payments.show', $order->order_code));
+
+        // Delivery location tetap tersimpan.
+        $this->assertSame('-6.9000000', (string) $order->fresh()->latitude);
+        $this->assertSame('Patokan gang', $order->fresh()->address_note);
+        $this->assertSame('unpaid', $order->fresh()->payment->status);
+
+        // Route success lama ikut mengarah ke payment (tanpa loop).
+        $this->get(route('orders.success', $order->order_code))
+            ->assertRedirect(route('payments.show', $order->order_code));
+    }
+
+    public function test_tracking_locked_until_payment_approved(): void
+    {
+        $menu = $this->makeMenu();
+        PaymentMethod::create([
+            'type' => 'dana', 'name' => 'DANA', 'account_name' => 'KAIRO RAMEN',
+            'account_number' => '081234567890', 'is_active' => true,
+        ]);
+        $this->withSession(['cart' => [$menu->id => 1]])
+            ->post('/checkout', [
+                'customer_name' => 'Kunci',
+                'customer_phone' => '08222',
+                'customer_address' => 'Jl Test',
+            ]);
+        $order = Order::firstOrFail();
+        $method = PaymentMethod::firstOrFail();
+
+        // unpaid → tracking dialihkan ke payment.
+        $this->get(route('orders.show', $order->order_code))
+            ->assertRedirect(route('payments.show', $order->order_code));
+
+        // waiting_verification → tetap dialihkan.
+        $this->post(route('payments.store', $order->order_code), [
+            'payment_method' => $method->id,
+            'proof_image' => UploadedFile::fake()->create('bukti.jpg', 500, 'image/jpeg'),
+        ]);
+        $this->get(route('orders.show', $order->order_code))
+            ->assertRedirect(route('payments.show', $order->order_code));
+    }
+
+    public function test_cooking_blocked_without_paid_payment(): void
+    {
+        // Guard server-side: tidak ada jalan ke cooking tanpa paid,
+        // bahkan via endpoint advance langsung.
+        $admin = $this->makeAdmin();
+        $menu = $this->makeMenu();
+        PaymentMethod::create([
+            'type' => 'dana', 'name' => 'DANA', 'account_name' => 'KAIRO RAMEN',
+            'account_number' => '081234567890', 'is_active' => true,
+        ]);
+        $this->withSession(['cart' => [$menu->id => 1]])
+            ->post('/checkout', [
+                'customer_name' => 'Dapur',
+                'customer_phone' => '08333',
+                'customer_address' => 'Jl Test',
+            ]);
+        $order = Order::firstOrFail();
+        $method = PaymentMethod::firstOrFail();
+
+        // Paksa order approved tanpa paid (simulasi data nakal): advance tetap ditolak.
+        $order->update(['status' => 'approved', 'approved_at' => now()]);
+        $this->actingAs($admin)->post(route('admin.orders.advance', $order))
+            ->assertSessionHasErrors('order');
+        $this->assertSame('approved', $order->fresh()->status);
+
+        // Setelah paid via satu tombol approve, cooking boleh jalan.
+        $this->post(route('payments.store', $order->order_code), [
+            'payment_method' => $method->id,
+            'proof_image' => UploadedFile::fake()->create('bukti.jpg', 500, 'image/jpeg'),
+        ]);
+        $this->actingAs($admin)->post(route('admin.payments.approve', $order));
+        $this->actingAs($admin)->post(route('admin.orders.advance', $order));
+        $this->assertSame('cooking', $order->fresh()->status);
     }
 
     public function test_auto_complete_after_one_hour(): void

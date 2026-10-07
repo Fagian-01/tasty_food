@@ -73,13 +73,81 @@
 </div>
 
 <div class="admin-table-card" style="margin-bottom:20px;">
+    <div class="admin-table-head"><h2>Pembayaran</h2>
+        @if($order->payment)
+            <span class="status-badge status-{{ $order->payment->status === 'paid' ? 'delivered' : ($order->payment->status === 'rejected' ? 'rejected' : ($order->payment->status === 'waiting_verification' ? 'cooking' : 'pending')) }}">{{ $order->payment->statusLabel() }}</span>
+        @endif
+    </div>
+    @if($order->payment && $order->payment->payment_method_name)
+        <p><strong>Metode:</strong> {{ $order->payment->payment_method_name }} ({{ $order->payment->typeLabel() }})</p>
+        @if($order->payment->payment_provider)
+            <p><strong>Provider:</strong> {{ $order->payment->payment_provider }}</p>
+        @endif
+        @if($order->payment->payment_bank_name)
+            <p><strong>Bank:</strong> {{ $order->payment->payment_bank_name }}</p>
+        @endif
+        <p><strong>{{ $order->payment->payment_method_type === 'qris' ? 'Merchant' : 'Atas nama' }}:</strong> {{ $order->payment->payment_account_name }}</p>
+        @if($order->payment->payment_account_number)
+            <p><strong>Nomor:</strong> {{ $order->payment->payment_account_number }}</p>
+        @endif
+        @if($order->payment->payment_qris_image)
+            <p style="margin-top:12px;"><strong>QRIS saat transaksi (snapshot):</strong></p>
+            <a href="{{ asset('storage/' . $order->payment->payment_qris_image) }}" target="_blank" rel="noopener">
+                <img src="{{ asset('storage/' . $order->payment->payment_qris_image) }}" alt="QRIS histori {{ $order->order_code }}" class="pay-proof-admin">
+            </a>
+        @endif
+        <p><strong>Total:</strong> Rp {{ number_format($order->payment->amount, 0, ',', '.') }}</p>
+        @if($order->payment->paid_at)
+            <p><strong>Lunas pada:</strong> {{ $order->payment->paid_at->format('d M Y H:i') }}</p>
+        @endif
+        @if($order->payment->proof_image)
+            <p style="margin-top:12px;"><strong>Bukti Transfer:</strong></p>
+            <a href="{{ asset('storage/' . $order->payment->proof_image) }}" target="_blank" rel="noopener">
+                <img src="{{ asset('storage/' . $order->payment->proof_image) }}" alt="Bukti transfer {{ $order->order_code }}" class="pay-proof-admin">
+            </a>
+        @else
+            <p class="admin-muted" style="margin-top:8px;">Belum ada bukti transfer.</p>
+        @endif
+        @if($order->payment->status === 'waiting_verification')
+            <div class="admin-form-actions">
+                <form action="{{ route('admin.payments.approve', $order) }}" method="POST" style="flex:1;display:flex;">
+                    @csrf
+                    <button type="submit" class="btn-primary" style="flex:1;background:var(--accent);" onclick="return confirm('Setujui pesanan & pembayaran ini? Order masuk APPROVED, payment LUNAS.')">✓ APPROVE PESANAN &amp; PEMBAYARAN</button>
+                </form>
+                <form action="{{ route('admin.payments.reject', $order) }}" method="POST" style="flex:1;display:flex;">
+                    @csrf
+                    <button type="submit" class="row-danger" style="flex:1;padding:15px;" onclick="return confirm('Tolak bukti pembayaran ini?')">✕ TOLAK PEMBAYARAN</button>
+                </form>
+            </div>
+        @endif
+    @else
+        <p class="admin-muted">Customer belum memilih metode pembayaran (unpaid).</p>
+    @endif
+</div>
+
+@php $payStatus = $order->payment?->status ?? 'unpaid'; @endphp
+<div class="admin-table-card" style="margin-bottom:20px;">
     <div class="admin-table-head"><h2>Aksi Status</h2></div>
-    @if($order->status === 'pending')
+    @if($order->status === 'pending' && $payStatus === 'unpaid')
+        <div class="order-warn">Menunggu pembayaran customer. Tidak ada aksi sampai bukti pembayaran diupload.</div>
         <div class="admin-form-actions">
-            <form action="{{ route('admin.orders.approve', $order) }}" method="POST" style="flex:1;display:flex;">
+            <form action="{{ route('admin.orders.reject', $order) }}" method="POST" style="flex:1;display:flex;">
                 @csrf
-                <button type="submit" class="btn-primary" style="flex:1;">Approve Pesanan</button>
+                <button type="submit" class="row-danger" style="flex:1;padding:15px;" onclick="return confirm('Tolak pesanan ini?')">Tolak Pesanan</button>
             </form>
+        </div>
+    @elseif($order->status === 'pending' && $payStatus === 'rejected')
+        <div class="order-warn">Pembayaran ditolak. Menunggu customer upload bukti baru. Order tidak bisa diproses.</div>
+        <div class="admin-form-actions">
+            <form action="{{ route('admin.orders.reject', $order) }}" method="POST" style="flex:1;display:flex;">
+                @csrf
+                <button type="submit" class="row-danger" style="flex:1;padding:15px;" onclick="return confirm('Tolak pesanan ini?')">Tolak Pesanan</button>
+            </form>
+        </div>
+    @elseif($order->status === 'pending' && $payStatus === 'paid')
+        <div class="order-warn">Pembayaran sudah lunas — gunakan tombol APPROVE PESANAN &amp; PEMBAYARAN di section Pembayaran.</div>
+    @elseif($order->status === 'pending')
+        <div class="admin-form-actions">
             <form action="{{ route('admin.orders.reject', $order) }}" method="POST" style="flex:1;display:flex;">
                 @csrf
                 <button type="submit" class="row-danger" style="flex:1;padding:15px;" onclick="return confirm('Tolak pesanan ini?')">Tolak Pesanan</button>

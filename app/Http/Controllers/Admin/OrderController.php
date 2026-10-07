@@ -32,23 +32,25 @@ class OrderController extends Controller
 
     public function show(Order $order): View
     {
-        $order->load('items.menu');
+        $order->load(['items.menu', 'payment']);
 
         return view('admin.orders.show', compact('order'));
     }
 
     public function approve(Order $order): RedirectResponse
     {
-        if ($order->status !== 'pending') {
-            return back()->withErrors(['order' => 'Hanya pesanan pending yang bisa disetujui.']);
+        // Jalur approve order terpisah DINONAKTIFKAN — flow baru memakai
+        // SATU tombol "APPROVE PESANAN & PEMBAYARAN" (Admin\PaymentController).
+        // Endpoint lama dipertahankan agar tidak 404, tapi selalu ditolak
+        // dengan arahan ke tombol yang benar. Tidak ada perubahan data.
+        if ($order->status === 'pending') {
+            $order->loadMissing('payment');
+            if (($order->payment?->status ?? 'unpaid') === 'waiting_verification') {
+                return back()->withErrors(['order' => 'Gunakan tombol APPROVE PESANAN & PEMBAYARAN untuk memverifikasi pembayaran ini.']);
+            }
         }
 
-        $order->update([
-            'status' => 'approved',
-            'approved_at' => now(),
-        ]);
-
-        return back()->with('success', $order->order_code.' disetujui.');
+        return back()->withErrors(['order' => 'Approval order terpisah sudah tidak berlaku. Verifikasi pembayaran melalui tombol APPROVE PESANAN & PEMBAYARAN.']);
     }
 
     public function reject(Order $order): RedirectResponse
@@ -74,6 +76,22 @@ class OrderController extends Controller
         }
 
         $timestampField = Order::TIMESTAMP_FOR_STATUS[$next];
+
+        // Guard dapur (server-side, bukan sekadar UI): TIDAK ada jalan ke
+        // cooking kecuali payment SUDAH paid. Berlaku untuk order baru
+        // (punya baris payment) maupun order lawas (tanpa baris payment →
+        // ditolak juga, karena flow baru mewajibkan bayar dulu).
+        // Tahap setelah cooking tidak butuh guard tambahan: tidak mungkin
+        // sampai sana tanpa lewat gerbang paid ini.
+        if ($next === 'cooking') {
+            $order->loadMissing('payment');
+            if (($order->payment?->status ?? 'unpaid') !== 'paid') {
+                return back()->withErrors(['order' => 'Tidak bisa masuk dapur sebelum pembayaran LUNAS (paid). Verifikasi pembayaran dulu via APPROVE PESANAN & PEMBAYARAN.']);
+            }
+            if ($order->status !== 'approved') {
+                return back()->withErrors(['order' => 'Order harus berstatus APPROVED sebelum dimasak.']);
+            }
+        }
 
         $order->update([
             'status' => $next,
